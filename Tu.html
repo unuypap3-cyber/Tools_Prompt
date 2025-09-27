@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bahak Tools Generate - Veo 3 Prompt Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Dark background */
+            color: #e6e6e6;
+        }
+
+        /* --- Custom Effects for Title and Description --- */
+        
+        /* Effect for the Title: Dazzling Rainbow Glow */
+        .dazzling-text {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 2px;
+            animation: rainbow-glow 3s infinite alternate;
+        }
+
+        @keyframes rainbow-glow {
+            0% {
+                color: #ff00cc;
+                text-shadow: 0 0 5px #ff00cc, 0 0 10px #ff00cc;
+            }
+            25% {
+                color: #ffcc00;
+                text-shadow: 0 0 5px #ffcc00, 0 0 10px #ffcc00;
+            }
+            50% {
+                color: #00ccff;
+                text-shadow: 0 0 5px #00ccff, 0 0 10px #00ccff;
+            }
+            75% {
+                color: #00ff00;
+                text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+            }
+            100% {
+                color: #ff00cc;
+                text-shadow: 0 0 5px #ff00cc, 0 0 10px #ff00cc;
+            }
+        }
+
+        /* Effect for the Creator Box Border: Pulsating Rainbow Circle */
+        .creator-box {
+            position: relative;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: #161b22;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .creator-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                #ff00cc, #ffcc00, #00ccff, #00ff00, #ff00cc
+            );
+            z-index: 0;
+            animation: rotate 4s linear infinite;
+        }
+        .creator-box-content {
+            position: relative;
+            z-index: 10;
+            background: #161b22;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: #fff;
+            text-align: center;
+        }
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Typing cursor for description */
+        .typing-cursor {
+            border-right: 2px solid;
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: white }
+        }
+        
+        /* Select and Input styling */
+        select, input[type="text"], textarea {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            color: #e6e6e6;
+        }
+
+        /* Styling for the final prompt output */
+        #finalPrompt {
+            min-height: 200px;
+            background-color: #161b22;
+            border: 2px solid #30363d;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- Header & Special Effects -->
+    <header class="mb-8">
+        <h1 class="dazzling-text" id="appTitle">bahak tools generate</h1>
+        <p class="text-center text-sm mt-2 text-gray-400">
+            <span id="descriptionText"></span>
+            <span class="typing-cursor"></span>
+        </p>
+    </header>
+
+    <main class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Creator Info Box -->
+        <div class="creator-box shadow-2xl">
+            <div class="creator-box-content">
+                <p class="text-lg font-bold">created by bahak</p>
+                <p class="text-sm">WhatsApp: 081330771837</p>
+            </div>
+        </div>
+
+        <!-- Configuration Form -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-800 rounded-xl shadow-lg">
+
+            <!-- Video Quality & Aspect Ratio -->
+            <div class="md:col-span-2">
+                <h2 class="text-xl font-bold mb-3 text-cyan-400">Pengaturan Dasar Video</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Aspek Rasio (Ukuran Video)</label>
+                        <select id="aspectRatio" class="w-full p-2 rounded-lg border-2 border-gray-600 focus:ring-cyan-500 focus:border-cyan-500 transition duration-150">
+                            <option value="16:9">Horizontal (16:9) - Landscape</option>
+                            <option value="9:16">Vertikal (9:16) - Mobile/Reels</option>
+                            <option value="1:1">Kotak (1:1)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Gaya Visual (Kualitas)</label>
+                        <input type="text" id="visualStyle" value="Ultra HD 8K, cinematic shot, hyperrealistic, no CGI/animation effects, smooth motion, high detail" class="w-full p-2 rounded-lg border-2 border-gray-600" disabled>
+                        <p class="text-xs mt-1 text-gray-400">Kualitas: HD Realistis Tanpa Efek Animasi (Wajib)</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="md:col-span-2 border-gray-700">
+
+            <!-- Genre / Theme -->
+            <div>
+                <label for="theme" class="block text-sm font-medium mb-1 text-yellow-400">Pilih Tema/Genre</label>
+                <select id="theme" class="w-full p-3 rounded-lg border-2 border-gray-600">
+                    <option value="lucu-humoris">Lucu / Humor (Komedi Situasi)</option>
+                    <option value="drama-romantis">Drama Romantis (Baper)</option>
+                    <option value="action-thriller">Action / Thriller (Tegang)</option>
+                    <option value="slice-of-life">Slice of Life (Keseharian)</option>
+                    <option value="horor-mistis">Horor / Mistis (Seram)</option>
+                    <option value="inspirational">Inspirasional / Motivasi</option>
+                </select>
+            </div>
+
+            <!-- Language / Dialogue -->
+            <div>
+                <label for="language" class="block text-sm font-medium mb-1 text-yellow-400">Bahasa Dialog Utama</label>
+                <select id="language" class="w-full p-3 rounded-lg border-2 border-gray-600">
+                    <option value="bahasa-indonesia-baku">Bahasa Indonesia Baku (Formal/Film)</option>
+                    <option value="bahasa-indonesia-gaul">Bahasa Indonesia Gaul (Sehari-hari)</option>
+                    <option value="bahasa-jawa">Bahasa Jawa (Logat Medok/Halus)</option>
+                    <option value="bahasa-sunda">Bahasa Sunda</option>
+                </select>
+            </div>
+
+            <!-- Character / Role Selection -->
+            <div class="md:col-span-2">
+                <h3 class="text-lg font-bold mb-2 mt-4 text-emerald-400">Karakter & Peran (Minimal 1 Karakter)</h3>
+                
+                <!-- Character 1 - Focus on Female Lead (Jawa) -->
+                <div class="p-4 bg-gray-700 rounded-lg mb-4">
+                    <h4 class="text-md font-semibold mb-2 text-pink-300">Karakter 1: Wanita Utama (Jawa Indonesia)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="col-span-1 sm:col-span-2">
+                            <label for="char1Role" class="block text-xs font-medium mb-1">Peran Dalam Cerita</label>
+                            <select id="char1Role" class="w-full p-2 rounded-lg">
+                                <option value="anak-muda-aktif">Anak Muda Aktif</option>
+                                <option value="istri-penyayang">Istri Penyayang</option>
+                                <option value="mahasiswi-pintar">Mahasiswi Pintar</option>
+                                <option value="polwan-tegas">Polwan Tegas</option>
+                                <option value="warga-biasa">Warga Biasa</option>
+                                <option value="pacar-manja">Pacar Manja</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="char1Attire" class="block text-xs font-medium mb-1">Pakaian/Penampilan</label>
+                            <select id="char1Attire" class="w-full p-2 rounded-lg">
+                                <option value="hijab-modern">Cantik, Berhijab (Pashmina Modern)</option>
+                                <option value="casual-fit">Cantik, Tanpa Hijab (Casual, Pas Badan)</option>
+                                <option value="formal-batik">Cantik, Formal (Batik Modern)</option>
+                                <option value="seragam-kerja">Seragam Profesi/Kerja</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label for="char1Manual" class="block text-xs font-medium mb-1">Deskripsi Aksi Manual Karakter 1 (Opsional, cth: sedang memasak sambil tertawa)</label>
+                            <input type="text" id="char1Manual" placeholder="cth: sedang mengendarai motor sambil marah-marah" class="w-full p-2 rounded-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Character 2 -->
+                <div class="p-4 bg-gray-700 rounded-lg">
+                    <h4 class="text-md font-semibold mb-2 text-indigo-300">Karakter 2: Pendamping/Lawan Main (Opsional)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label for="char2Type" class="block text-xs font-medium mb-1">Jenis Karakter</label>
+                            <select id="char2Type" class="w-full p-2 rounded-lg">
+                                <option value="none">-- Tidak Ada --</option>
+                                <option value="teman">Teman Akrab Pria</option>
+                                <option value="suami">Suami/Pacar (Pria)</option>
+                                <option value="polisi">Polisi/TNI</option>
+                                <option value="kerabat">Anggota Keluarga/Kerabat</option>
+                                <option value="masyarakat">Anggota Masyarakat</option>
+                            </select>
+                        </div>
+                        <div class="col-span-1 sm:col-span-2">
+                            <label for="char2Manual" class="block text-xs font-medium mb-1">Deskripsi Aksi Manual Karakter 2 (Opsional, cth: sedang menenangkan Karakter 1)</label>
+                            <input type="text" id="char2Manual" placeholder="cth: seorang Polisi sedang menilang dengan senyum" class="w-full p-2 rounded-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="md:col-span-2 border-gray-700">
+
+            <!-- Setting and Dialogue -->
+            <div class="md:col-span-2">
+                <h3 class="text-lg font-bold mb-2 mt-4 text-purple-400">Pengaturan Latar & Dialog</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="setting" class="block text-xs font-medium mb-1">Latar Tempat (Setting)</label>
+                        <select id="setting" class="w-full p-2 rounded-lg">
+                            <option value="pasar-tradisional">Pasar Tradisional Ramai</option>
+                            <option value="kantor-modern">Kantor Modern (Jakarta/Surabaya)</option>
+                            <option value="jalan-desa">Jalan Desa dengan sawah</option>
+                            <option value="cafe-aesthetic">Cafe/Kopi Shop Aesthetic</option>
+                            <option value="ruang-tamu-rumah">Ruang Tamu Rumah Minimalis</option>
+                            <option value="jalanan-kota-malam">Jalanan Kota yang sibuk di malam hari</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="dialogueFocus" class="block text-xs font-medium mb-1">Fokus Dialog/Interaksi</label>
+                        <select id="dialogueFocus" class="w-full p-2 rounded-lg">
+                            <option value="serasi-harmonis">Dialog Serasi, Irama Bicara Harmonis</option>
+                            <option value="argumen-intens">Argumen Intens, Emosional</option>
+                            <option value="bisikan-rahasia">Berbisik, Penuh Rahasia</option>
+                            <option value="monolog-emosi">Monolog (Satu Orang Berbicara Penuh Emosi)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Output Section -->
+        <div class="p-6 bg-gray-900 rounded-xl shadow-inner">
+            <h2 class="text-xl font-bold mb-3 text-red-400">Prompt Video Veo 3 Anda</h2>
+            <textarea id="finalPrompt" readonly class="w-full p-4 rounded-lg text-sm transition-all duration-300"></textarea>
+            <button onclick="copyToClipboard()" class="w-full mt-3 p-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-md transition duration-200">
+                SALIN PROMPT (COPY)
+            </button>
+            <p id="copyMessage" class="mt-2 text-center text-green-400 font-medium hidden">Prompt berhasil disalin!</p>
+        </div>
+
+        <div id="statusMessage" class="text-center p-3 mt-4 bg-blue-900/50 rounded-lg hidden"></div>
+        
+    </main>
+
+    <script>
+        // --- DATA DICTIONARY ---
+        const CHAR_DESCRIPTIONS = {
+            'anak-muda-aktif': 'Seorang perempuan muda energik berusia 20-an.',
+            'istri-penyayang': 'Seorang wanita dewasa berusia 30-an, penuh kasih sayang dan kehangatan.',
+            'mahasiswi-pintar': 'Seorang mahasiswi fokus dan serius di lingkungan kampus.',
+            'polwan-tegas': 'Seorang Polwan Indonesia yang tegas dan berwibawa, mengenakan seragam dinas.',
+            'warga-biasa': 'Seorang wanita paruh baya yang merupakan warga desa/kota biasa.',
+            'pacar-manja': 'Seorang perempuan muda yang ekspresif dan sedikit manja.',
+        };
+
+        const CHAR_ATTIRE = {
+            'hijab-modern': 'Mengenakan **Hijab Pashmina modern** dan blouse yang elegan, berpose anggun.',
+            'casual-fit': 'Mengenakan **kemeja fitted (pas badan)** dan jeans bergaya modern yang menonjolkan postur tubuhnya, menunjukkan rasa percaya diri yang tinggi.',
+            'formal-batik': 'Mengenakan kebaya atau dress **Batik Modern** yang mewah untuk acara formal.',
+            'seragam-kerja': 'Mengenakan seragam rapi sesuai profesi (misalnya, seragam kantor atau PDH).',
+        };
+
+        const CHAR_2_DESCRIPTIONS = {
+            'teman': 'Seorang teman akrab pria berusia sebaya, berpenampilan santai (casual).',
+            'suami': 'Seorang suami/pacar yang gagah dan berwibawa, mengenakan kemeja rapi.',
+            'polisi': 'Seorang perwira Polisi atau TNI yang beruniform lengkap, karismatik.',
+            'kerabat': 'Seorang anggota keluarga (Ayah/Kakak) yang terlihat bijaksana.',
+            'masyarakat': 'Seorang pria anggota masyarakat biasa, berjaket dan berhelm motor.',
+            'none': '',
+        };
+
+        const THEME_INSTRUCTIONS = {
+            'lucu-humoris': 'Gaya komedi slapstick, lucu, dan penuh kejutan. Pastikan ekspresi wajah berlebihan dan timing komedi tepat.',
+            'drama-romantis': 'Penuh emosi, tatapan mata yang dalam, musik latar yang menyentuh. Pencahayaan lembut dan hangat.',
+            'action-thriller': 'Gerakan cepat, pencahayaan minim (low key lighting), sudut kamera dinamis (Dutch Angle). Intensitas tinggi.',
+            'slice-of-life': 'Sederhana, hangat, warna-warna alami (natural tones). Fokus pada detail kecil kehidupan sehari-hari.',
+            'horor-mistis': 'Gothic, berkabut, pencahayaan gelap. Fokus pada ketegangan dan suasana mencekam. (Jangan tampilkan hantu secara eksplisit, fokus pada reaksi takut karakter)',
+            'inspirational': 'Warna cerah, gerakan lambat (slow motion) saat momen klimaks. Penuh harapan dan semangat.',
+        };
+
+        const DIALOGUE_INSTRUCTIONS = {
+            'serasi-harmonis': 'Kedua karakter berbicara dengan intonasi yang seirama dan dialog yang saling melengkapi (harmonious dialogue), menunjukkan chemistry yang kuat.',
+            'argumen-intens': 'Dialog cepat, nada tinggi, penuh ketegangan emosional. Masing-masing karakter berusaha mendominasi pembicaraan.',
+            'bisikan-rahasia': 'Karakter berbisik pelan, kamera fokus close-up ke wajah mereka, suara latar senyap.',
+            'monolog-emosi': 'Karakter utama melakukan monolog (berbicara sendiri) dengan luapan emosi yang mendalam dan tulus.',
+        };
+        
+        // --- CORE LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const controls = document.querySelectorAll('select, input[type="text"]');
+            controls.forEach(control => control.addEventListener('change', generatePrompt));
+            controls.forEach(control => control.addEventListener('input', generatePrompt)); // For text inputs
+
+            // Initialize effects and initial prompt
+            startTypingEffect();
+            generatePrompt();
+        });
+
+        function generatePrompt() {
+            const aspectRatio = document.getElementById('aspectRatio').value;
+            const visualStyle = document.getElementById('visualStyle').value;
+            const theme = document.getElementById('theme').value;
+            const language = document.getElementById('language').value;
+            const char1Role = document.getElementById('char1Role').value;
+            const char1Attire = document.getElementById('char1Attire').value;
+            const char1Manual = document.getElementById('char1Manual').value.trim();
+            const char2Type = document.getElementById('char2Type').value;
+            const char2Manual = document.getElementById('char2Manual').value.trim();
+            const setting = document.getElementById('setting').value;
+            const dialogueFocus = document.getElementById('dialogueFocus').value;
+
+            // 1. Build Quality and Style Header
+            let promptParts = [
+                `Video Prompt Veo 3: [ASPEK RASIO: ${aspectRatio}]`,
+                `GAYA VISUAL: ${visualStyle}`,
+                `LATAR LOKASI: ${setting}, Indonesia.`,
+                `GENRE: ${theme.toUpperCase().replace('-', ' ')}.`,
+                `BAHASA: ${language.toUpperCase().replace('-', ' ')}.\n`,
+                `FOKUS DIALOG: ${DIALOGUE_INSTRUCTIONS[dialogueFocus]}`,
+                `INSTRUKSI GAYA FILM: ${THEME_INSTRUCTIONS[theme]}.`,
+                `KUALITAS: **REALISTIS NYATA (Live-action)**, Cinematic, HD, No Animation.\n`,
+            ];
+
+            // 2. Build Character 1 Description (Indonesian Javanese Woman)
+            let char1Desc = `KARAKTER 1 (UTAMA): **Wanita Jawa Indonesia sangat cantik.** ${CHAR_DESCRIPTIONS[char1Role]}. Kulit sawo matang halus, mata ekspresif. ${CHAR_ATTIRE[char1Attire]}.`;
+            if (char1Manual) {
+                char1Desc += ` AKSI: ${char1Manual}.`;
+            } else {
+                char1Desc += ` AKSI: Berinteraksi dengan pandangan yang dalam.`;
+            }
+            promptParts.push(char1Desc);
+
+            // 3. Build Character 2 Description (if selected)
+            if (char2Type !== 'none') {
+                let char2Desc = `KARAKTER 2: ${CHAR_2_DESCRIPTIONS[char2Type]}.`;
+                if (char2Manual) {
+                    char2Desc += ` AKSI: ${char2Manual}.`;
+                } else {
+                    char2Desc += ` AKSI: Merespons Karakter 1 dengan gestur tubuh yang meyakinkan.`;
+                }
+                promptParts.push(char2Desc);
+            }
+            
+            // 4. Final Assembly
+            const finalPromptText = promptParts.join('\n\n');
+            document.getElementById('finalPrompt').value = finalPromptText;
+        }
+
+        // --- UTILITY FUNCTIONS ---
+
+        // Function for the Typing/Glitter Description Effect
+        const DESCRIPTION_TEXT = "suwun wes nganggo aplikasi gawenanku by bahak";
+        const descriptionElement = document.getElementById('descriptionText');
+        let charIndex = 0;
+        let isTypingForward = true;
+
+        function startTypingEffect() {
+            function type() {
+                if (isTypingForward) {
+                    if (charIndex < DESCRIPTION_TEXT.length) {
+                        descriptionElement.textContent += DESCRIPTION_TEXT.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(type, 80); // Typing speed
+                    } else {
+                        isTypingForward = false;
+                        setTimeout(type, 1500); // Pause at end
+                    }
+                } else {
+                    if (charIndex > 0) {
+                        descriptionElement.textContent = DESCRIPTION_TEXT.substring(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(type, 40); // Erasing speed
+                    } else {
+                        isTypingForward = true;
+                        setTimeout(type, 500); // Pause at start
+                    }
+                }
+            }
+            type();
+        }
+
+
+        // Function to copy the generated prompt to clipboard
+        function copyToClipboard() {
+            const copyText = document.getElementById("finalPrompt");
+            
+            // Use execCommand for broader compatibility in sandboxed environments
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('Could not copy text: ', err);
+            }
+
+            const copyMessage = document.getElementById('copyMessage');
+            if (success) {
+                copyMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    copyMessage.classList.add('hidden');
+                }, 2000);
+            } else {
+                // Fallback UI message if copy fails
+                copyMessage.textContent = 'Gagal menyalin. Silakan salin manual.';
+                copyMessage.classList.remove('hidden', 'text-green-400');
+                copyMessage.classList.add('text-red-400');
+                setTimeout(() => {
+                    copyMessage.classList.add('hidden');
+                    copyMessage.classList.remove('text-red-400');
+                    copyMessage.classList.add('text-green-400');
+                    copyMessage.textContent = 'Prompt berhasil disalin!'; // Reset message
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>
+
